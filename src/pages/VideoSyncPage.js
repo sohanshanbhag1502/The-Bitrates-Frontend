@@ -3,9 +3,9 @@ import "./VideoSyncPage.css";
 
 export default function VideoSyncPage() {
   const [file, setFile] = useState(null);
+  const [videoUrl, setVideoUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-  const [taskId, setTaskId] = useState(null);
 
   const fileInputRef = useRef(null);
 
@@ -14,50 +14,58 @@ export default function VideoSyncPage() {
   };
 
   const handleSubmit = async () => {
-    if (!file) {
-      alert("Please upload a video container.");
+    if (!file && !videoUrl) {
+      alert("Please upload a video file or enter a URL.");
       return;
     }
 
     setLoading(true);
     setResult(null);
-    setTaskId(null);
 
     try {
-      const formData = new FormData();
-      formData.append("video", file);
+      let uploadResponse;
 
-      // ---- Upload API ----
-      const uploadResponse = await fetch("http://localhost:8000/upload", {
-        method: "POST",
-        body: formData,
-      });
+      // =======================
+      // CASE 1: FILE UPLOAD
+      // =======================
+      if (file) {
+        const formData = new FormData();
+        formData.append("video", file);
+
+        uploadResponse = await fetch("http://localhost:8000/upload", {
+          method: "POST",
+          body: formData,
+        });
+      }
+
+      // =======================
+      // CASE 2: URL UPLOAD
+      // =======================
+      else if (videoUrl) {
+        uploadResponse = await fetch("http://localhost:8000/upload_url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: videoUrl }),
+        });
+      }
 
       const uploadData = await uploadResponse.json();
-      // console.log("Upload Response:", uploadData);
-
-      // Expecting backend to return: { task_id: "xyz123" }
       const newTaskId = uploadData.task_id;
-      setTaskId(newTaskId);
 
-      // ---- Sync Result API ----
-      const syncResponse = await fetch("http://localhost:8000/result", {
+      // ======== Result API =========
+      const resultResponse = await fetch("http://localhost:8000/result", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ task_id: taskId }),
+        body: JSON.stringify({ task_id: newTaskId }),
       });
 
-      const syncData = await syncResponse.json();
-      // console.log("Sync Result:", syncData);
+      const resultData = await resultResponse.json();
+      setResult(resultData);
 
-      setResult(syncData);
-
-
-      // ---- Clear file input ----
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      // reset inputs
+      if (fileInputRef.current) fileInputRef.current.value = "";
       setFile(null);
+      setVideoUrl("");
 
     } catch (error) {
       console.error(error);
@@ -71,8 +79,9 @@ export default function VideoSyncPage() {
     <div className="container">
       <h1>AV Sync Checker</h1>
 
+      {/* =============== FILE UPLOAD =============== */}
       <div className="upload-box">
-        <label className="upload-label">Upload Video Container</label>
+        <label className="upload-label">Upload Video File</label>
         <input 
           type="file" 
           accept="video/*" 
@@ -81,15 +90,21 @@ export default function VideoSyncPage() {
         />
       </div>
 
+      {/* =============== URL INPUT =============== */}
+      <div className="upload-box">
+        <label className="upload-label">Enter Video URL</label>
+        <input
+          type="text"
+          className="url-input"
+          placeholder="https://example.com/video.mp4"
+          value={videoUrl}
+          onChange={(e) => setVideoUrl(e.target.value)}
+        />
+      </div>
+
       <button className="submit-btn" onClick={handleSubmit} disabled={loading}>
         {loading ? "Processing..." : "Submit"}
       </button>
-
-      {/* {taskId && (
-        <div className="task-box">
-          <p><strong>Task ID:</strong> {taskId}</p>
-        </div>
-      )} */}
 
       {result && (
         <div className="result-box">
@@ -105,7 +120,6 @@ export default function VideoSyncPage() {
           </p>
         </div>
       )}
-
     </div>
   );
 }
