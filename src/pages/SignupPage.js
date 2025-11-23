@@ -1,28 +1,26 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./LoginPage.css";
+import "./SignupPage.css";
 
-const LoginPage = () => {
+const SignupPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
-    // Add real auth later if needed
-    navigate("/videosync");
+    // Add backend signup later
+    navigate("/"); // go back to login
   };
 
   return (
     <div className="login-page-container">
       <div className="login-card">
-        <div className="login-header">
-          <h1 className="login-title">Welcome Back</h1>
-          <p className="login-subtitle">Sign in to check your video sync</p>
-        </div>
+        <h1 className="login-title">Create Account</h1>
+        <p className="login-subtitle">Sign up to get started</p>
 
-        <form onSubmit={handleLogin} className="login-form">
+        <form onSubmit={handleSignup} className="login-form">
           <div className="input-group">
             <input
               type="email"
@@ -46,20 +44,19 @@ const LoginPage = () => {
           </div>
 
           <button type="submit" className="login-btn">
-            Login
+            Create Account
           </button>
         </form>
 
         <p className="login-footer">
-        Don't have an account?{" "}
-        <span className="link" onClick={() => navigate("/signup")}>
-            Sign up
-        </span>
+          Already have an account?{" "}
+          <span className="link" onClick={() => navigate("/")}>
+            Login
+          </span>
         </p>
-
       </div>
     </div>
   );
 };
 
-export default LoginPage;
+export default SignupPage;

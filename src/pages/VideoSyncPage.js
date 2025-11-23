@@ -27,12 +27,12 @@ export default function VideoSyncPage() {
         const formData = new FormData();
         formData.append("video", file);
 
-        uploadResponse = await fetch("http://localhost:8000/upload", {
+        uploadResponse = await fetch("http://localhost:4000/upload", {
           method: "POST",
           body: formData,
         });
       } else {
-        uploadResponse = await fetch("http://localhost:8000/upload", {
+        uploadResponse = await fetch("http://localhost:4000/upload", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url: videoUrl }),
@@ -41,11 +41,10 @@ export default function VideoSyncPage() {
 
       const { task_id } = await uploadResponse.json();
 
-      const resultRes = await fetch("http://localhost:8000/result", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ task_id }),
-      });
+      // FIXED → Correct backend endpoint
+      const resultRes = await fetch(
+        `http://localhost:4000/sync-result/${task_id}`
+      );
 
       const data = await resultRes.json();
       setResult(data);
@@ -86,8 +85,8 @@ export default function VideoSyncPage() {
             className={`tab ${activeTab === "file" ? "active" : ""}`}
             onClick={() => {
               setActiveTab("file");
-              setResult(null);     // 🔥 clear previous result
-              setVideoUrl("");     // clear url input
+              setResult(null);
+              setVideoUrl("");
             }}
           >
             Upload File
@@ -97,15 +96,14 @@ export default function VideoSyncPage() {
             className={`tab ${activeTab === "url" ? "active" : ""}`}
             onClick={() => {
               setActiveTab("url");
-              setResult(null);     // 🔥 clear previous result
-              setFile(null);       // clear file input
+              setResult(null);
+              setFile(null);
               if (fileInputRef.current) fileInputRef.current.value = "";
             }}
           >
             URL
           </button>
         </div>
-
 
         <div className="content">
           {activeTab === "file" && (
@@ -170,11 +168,13 @@ export default function VideoSyncPage() {
             <div className="result-header">
               <h3>{result.synced ? "Perfect Sync" : "Out of Sync"}</h3>
             </div>
+
             <div className="result-body">
               <p>
                 <strong>Status:</strong>{" "}
                 {result.synced ? "Synced" : "Not Synced"}
               </p>
+
               {!result.synced && (
                 <p className="offset">
                   <strong>Offset:</strong>{" "}
