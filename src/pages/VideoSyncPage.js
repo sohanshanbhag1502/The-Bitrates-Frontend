@@ -2,39 +2,27 @@ import React, { useState, useRef } from "react";
 import "./VideoSyncPage.css";
 
 export default function VideoSyncPage() {
-  const [activeTab, setActiveTab] = useState("file"); // "file" or "url"
+  const [activeTab, setActiveTab] = useState("file");
   const [file, setFile] = useState(null);
   const [videoUrl, setVideoUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-
+  const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleSubmit = async () => {
-    if (activeTab === "file" && !file) {
-      alert("Please upload a video file.");
-      return;
-    }
-
-    if (activeTab === "url" && !videoUrl.trim()) {
-      alert("Please enter a valid video URL.");
-      return;
-    }
+    if (activeTab === "file" && !file) return alert("Please upload a video file.");
+    if (activeTab === "url" && !videoUrl.trim()) return alert("Please enter a valid video URL.");
 
     setLoading(true);
     setResult(null);
 
     try {
       let uploadResponse;
-
       if (activeTab === "file") {
         const formData = new FormData();
         formData.append("video", file);
-
-        uploadResponse = await fetch("http://localhost:8000/upload", {
-          method: "POST",
-          body: formData,
-        });
+        uploadResponse = await fetch("http://localhost:8000/upload", { method: "POST", body: formData });
       } else {
         uploadResponse = await fetch("http://localhost:8000/upload_url", {
           method: "POST",
@@ -43,36 +31,49 @@ export default function VideoSyncPage() {
         });
       }
 
-      const uploadData = await uploadResponse.json();
-      const taskId = uploadData.task_id;
-
-      const resultResponse = await fetch("http://localhost:8000/result", {
+      const { task_id } = await uploadResponse.json();
+      const resultRes = await fetch("http://localhost:8000/result", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ task_id: taskId }),
+        body: JSON.stringify({ task_id }),
       });
-
-      const resultData = await resultResponse.json();
+      const resultData = await resultRes.json();
       setResult(resultData);
-
-      if (fileInputRef.current) fileInputRef.current.value = "";
-      setFile(null);
-      setVideoUrl("");
-
     } catch (err) {
       console.error(err);
       alert("Something went wrong.");
+    } finally {
+      setLoading(false);
+      setFile(null);
+      setVideoUrl("");
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
+  };
 
-    setLoading(false);
+  // Drag & Drop handlers
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragover" || e.type === "dragenter") setDragActive(true);
+    if (e.type === "dragleave" || e.type === "drop") setDragActive(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files?.[0]) setFile(e.dataTransfer.files[0]);
   };
 
   return (
     <div className="page-container">
       <div className="card">
-        <h1 className="title">AV Sync Checker</h1>
+        <h1 className="title">
+          <span className="gradient-text">AV Sync Checker</span>
+        </h1>
+        {/* <p className="subtitle">Detect audio-video delay in your videos instantly</p> */}
 
-        {/* TABS */}
+        {/* Tabs */}
         <div className="tabs">
           <button
             className={`tab ${activeTab === "file" ? "active" : ""}`}
@@ -80,59 +81,84 @@ export default function VideoSyncPage() {
           >
             Upload File
           </button>
-
           <button
             className={`tab ${activeTab === "url" ? "active" : ""}`}
             onClick={() => setActiveTab("url")}
           >
-            Upload via URL
+            URL
           </button>
         </div>
 
-        {/* TAB CONTENT */}
-        <div className="tab-content">
+        {/* Content */}
+        <div className="content">
           {activeTab === "file" && (
-            <div>
-              <label className="input-label">Choose a video file</label>
+            <div
+              className={`dropzone ${dragActive ? "drag-active" : ""}`}
+              onDragOver={handleDrag}
+              onDragEnter={handleDrag}
+              onDragLeave={handleDrag}
+              onDrop={handleDrop}
+            >
               <input
                 type="file"
                 accept="video/*"
                 ref={fileInputRef}
-                onChange={(e) => setFile(e.target.files[0])}
+                onChange={(e) => e.target.files?.[0] && setFile(e.target.files[0])}
+                id="file-input"
               />
+              <label htmlFor="file-input" className="dropzone-label">
+                {file ? (
+                  <p className="filename">Selected: {file.name}</p>
+                ) : (
+                  <>
+                    <svg className="upload-icon" viewBox="0 0 24 24">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM14 4l4 4h-4V4zm-2 9v5h-2v-5H7l5-5 5 5h-3z" />
+                    </svg>
+                    <p>Upload Video</p>
+                  </>
+                )}
+              </label>
             </div>
           )}
 
           {activeTab === "url" && (
-            <div>
-              <label className="input-label">Enter Video URL</label>
-              <input
-                type="text"
-                className="url-input"
-                placeholder="https://example.com/video.mp4"
-                value={videoUrl}
-                onChange={(e) => setVideoUrl(e.target.value)}
-              />
-            </div>
+            <input
+              type="text"
+              placeholder="https://example.com/video.mp4"
+              value={videoUrl}
+              onChange={(e) => setVideoUrl(e.target.value)}
+              className="url-input"
+            />
           )}
         </div>
 
-        <button
-          className="submit-btn"
-          onClick={handleSubmit}
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Check Sync"}
+        <button className="submit-btn" onClick={handleSubmit} disabled={loading}>
+          {loading ? (
+            <>
+              <span className="spinner"></span> Processing...
+            </>
+          ) : (
+            "Check Sync"
+          )}
         </button>
 
+        {/* Result */}
         {result && (
-          <div className="result-box">
-            <h3>Sync Result</h3>
-            <p><strong>Synced:</strong> {result.synced ? "Yes" : "No"}</p>
-            <p>
-              <strong>Offset:</strong>{" "}
-              {result.synced ? "—" : `${result.offset} seconds`}
-            </p>
+          <div className={`result-card ${result.synced ? "synced" : "not-synced"}`}>
+            <div className="result-header">
+              <h3>{result.synced ? "Perfect Sync" : "Out of Sync"}</h3>
+            </div>
+            <div className="result-body">
+              <p>
+                <strong>Status:</strong> {result.synced ? "Synced" : "Not Synced"}
+              </p>
+              {!result.synced && (
+                <p className="offset">
+                  <strong>Offset:</strong> {Math.abs(result.offset).toFixed(3)} seconds{" "}
+                  {result.offset > 0 ? "(audio ahead)" : "(video ahead)"}
+                </p>
+              )}
+            </div>
           </div>
         )}
       </div>
