@@ -1,69 +1,249 @@
-.container {
-  max-width: 550px;
-  margin: 40px auto;
-  padding: 25px;
+/* Page background - soft but distinct */
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7ff 0%, #e0e7ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+/* Card - crisp white with subtle shadow */
+.card {
+  width: 100%;
+  max-width: 500px;
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  font-family: Arial, sans-serif;
+  border-radius: 24px;
+  padding: 40px 36px;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.08),
+    0 8px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-h1 {
+/* Title - bold and modern */
+.title {
+  margin: 0 0 8px;
   text-align: center;
-  color: #333;
-  margin-bottom: 30px;
+  font-size: 36px;
+  font-weight: 800;
+  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.upload-box {
+.subtitle {
+  text-align: center;
+  color: #64748b;
+  margin-bottom: 32px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Tabs - pill style with clear active state */
+.tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 16px;
+  padding: 6px;
+  margin-bottom: 28px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tab {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #475569;
+}
+
+.tab.active {
+  background: #4f46e5;
+  color: white;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+}
+
+/* Dropzone - clean and interactive */
+.dropzone {
+  border: 2.5px dashed #cbd5e1;
+  border-radius: 18px;
+  background: #f8fafc;
+  transition: all 0.3s ease;
+  position: relative;
   margin-bottom: 20px;
 }
 
-.upload-label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 8px;
-  color: #444;
+.dropzone.drag-active {
+  border-color: #4f46e5;
+  background: #eef2ff;
+  transform: scale(1.01);
 }
 
-input[type="file"] {
-  padding: 10px;
+.dropzone input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
 }
 
+.dropzone-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 44px 20px;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.upload-icon {
+  width: 56px;
+  height: 56px;
+  fill: #94a3b8;
+  margin-bottom: 16px;
+}
+
+.dropzone-label p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.filename {
+  color: #4f46e5;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* URL Input */
+/* Make both upload methods look identical in height & centering */
+.content > div {
+  min-height: 180px;              /* same height for both tabs */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* URL tab – full-width centered input */
+.url-input {
+  width: 100%;
+  max-width: 420px;               /* looks balanced */
+  padding: 18px 20px;
+  border: 2.5px dashed #cbd5e1;
+  border-radius: 18px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  outline: none;
+  background: #f8fafc;
+  text-align: center;             /* extra safety */
+}
+
+.url-input:focus {
+  border-color: #4f46e5;
+  background: #eef2ff;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+.url-input::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+}
+/* Submit Button - vibrant & premium */
 .submit-btn {
   width: 100%;
-  padding: 12px;
-  font-size: 16px;
+  padding: 18px;
+  margin-top: 24px;
+  background: linear-gradient(90deg, #4f46e5, #7c3aed);
   border: none;
-  background: #007bff;
+  border-radius: 16px;
   color: white;
-  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 700;
   cursor: pointer;
-  margin-top: 10px;
-  transition: 0.2s ease;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
 }
 
-.submit-btn:hover {
-  background: #0056b3;
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(79, 70, 229, 0.4);
 }
 
 .submit-btn:disabled {
-  background: #7ba8d6;
+  opacity: 0.7;
   cursor: not-allowed;
+  transform: none;
 }
 
-.result-box {
-  margin-top: 30px;
-  padding: 20px;
-  background: #f7f7f7;
-  border-radius: 8px;
-  border-left: 4px solid #007bff;
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-.result-box h3 {
-  margin-bottom: 10px;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.result-box p {
-  margin: 5px 0;
-  font-size: 16px;
+/* Result Card - clean & bold */
+.result-card {
+  margin-top: 32px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.result-header {
+  padding: 18px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 22px;
+}
+
+.result-card.synced .result-header {
+  background: #10b981;
+  color: white;
+}
+
+.result-card.not-synced .result-header {
+  background: #ef4444;
+  color: white;
+}
+
+.result-body {
+  padding: 24px;
+  background: #f8fafc;
+}
+
+.result-body p {
+  margin: 12px 0;
+  font-size: 17px;
+  color: #1e293b;
+}
+
+.offset {
+  font-size: 20px !important;
+  font-weight: 800;
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 8px 16px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-top: 8px;
 }

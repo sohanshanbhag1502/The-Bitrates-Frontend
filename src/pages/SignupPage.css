@@ -1,0 +1,116 @@
+/* SignupPage.css – Same styling as LoginPage.css */
+
+/* Full-page container */
+.signup-page-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7ff 0%, #e0e7ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+/* Signup card */
+.signup-card {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 40px 32px;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.08),
+    0 8px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Title */
+.signup-title {
+  margin: 0 0 6px;
+  font-size: 32px;
+  font-weight: 800;
+  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.signup-subtitle {
+  color: #64748b;
+  margin-bottom: 32px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* Form */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+}
+
+/* Inputs + Button */
+.signup-input,
+.signup-btn {
+  width: 100%;
+  padding: 17px 20px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+/* Input fields */
+.signup-input {
+  border: 2.5px solid #e2e8f0;
+  background: #ffffff;
+  outline: none;
+}
+
+.signup-input:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+}
+
+.signup-input::placeholder {
+  color: #94a3b8;
+}
+
+/* Signup button */
+.signup-btn {
+  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  border: none;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+  margin-top: 6px;
+}
+
+.signup-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(79, 70, 229, 0.4);
+}
+
+/* Footer */
+.signup-footer {
+  margin-top: 28px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.signup-footer .link {
+  color: #4f46e5;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signup-footer .link:hover {
+  text-decoration: underline;
+}
