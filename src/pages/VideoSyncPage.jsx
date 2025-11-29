@@ -123,33 +123,6 @@ export default function VideoSyncPage() {
           </button>
         </div>
 
-        {/* Language Dropdowns */}
-        <div className="dropdown-container">
-          <label className="dropdown-label">Audio Language:</label>
-          <select
-            value={audioLang}
-            onChange={(e) => setAudioLang(e.target.value)}
-            className="input-style select-style"
-          >
-            <option value="">Select Audio Language</option>
-            {LANGUAGES.map((lang) => (
-              <option key={lang} value={lang}>{lang}</option>
-            ))}
-          </select>
-
-          <label className="dropdown-label">Video Language:</label>
-          <select
-            value={videoLang}
-            onChange={(e) => setVideoLang(e.target.value)}
-            className="input-style select-style"
-          >
-            <option value="">Select Video Language</option>
-            {LANGUAGES.map((lang) => (
-              <option key={lang} value={lang}>{lang}</option>
-            ))}
-          </select>
-        </div>
-
         <div className="content">
           {activeTab === "file" && (
             <div
@@ -181,14 +154,44 @@ export default function VideoSyncPage() {
           )}
 
           {activeTab === "url" && (
-            <input
-              type="text"
-              placeholder="https://example.com/video.mp4"
-              value={videoUrl}
-              onChange={(e) => setVideoUrl(e.target.value)}
-              className="input-style"
-            />
+            <div className="dropdown-container" style={{ marginTop: 0 }}>
+              <label className="dropdown-label">Enter URL</label>
+              <input
+                type="text"
+                placeholder="https://example.com/video.mp4"
+                value={videoUrl}
+                onChange={(e) => setVideoUrl(e.target.value)}
+                className="input-style"
+              />
+            </div>
           )}
+
+          {/* Language Dropdowns below file/url input */}
+          <div className="dropdown-container">
+            <label className="dropdown-label">Audio Language</label>
+            <select
+              value={audioLang}
+              onChange={(e) => setAudioLang(e.target.value)}
+              className="input-style select-style"
+            >
+              <option value="">Select Audio Language</option>
+              {LANGUAGES.map((lang) => (
+                <option key={lang} value={lang}>{lang}</option>
+              ))}
+            </select>
+
+            <label className="dropdown-label">Video Language</label>
+            <select
+              value={videoLang}
+              onChange={(e) => setVideoLang(e.target.value)}
+              className="input-style select-style"
+            >
+              <option value="">Select Video Language</option>
+              {LANGUAGES.map((lang) => (
+                <option key={lang} value={lang}>{lang}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <button className="submit-btn" onClick={handleSubmit} disabled={loading}>
