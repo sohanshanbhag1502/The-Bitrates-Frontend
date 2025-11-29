@@ -1,4 +1,4 @@
-/* Page background - soft but distinct */
+/* Page background */
 .page-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f7ff 0%, #e0e7ff 100%);
@@ -9,20 +9,18 @@
   font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
-/* Card - crisp white with subtle shadow */
+/* Card */
 .card {
   width: 100%;
   max-width: 500px;
   background: #ffffff;
   border-radius: 24px;
   padding: 40px 36px;
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.08),
-    0 8px 20px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 8px 20px rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.06);
 }
 
-/* Title - bold and modern */
+/* Title */
 .title {
   margin: 0 0 8px;
   text-align: center;
@@ -34,15 +32,7 @@
   -webkit-text-fill-color: transparent;
 }
 
-.subtitle {
-  text-align: center;
-  color: #64748b;
-  margin-bottom: 32px;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-/* Tabs - pill style with clear active state */
+/* Tabs */
 .tabs {
   display: flex;
   background: #f1f5f9;
@@ -71,7 +61,7 @@
   box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
 }
 
-/* Dropzone - clean and interactive */
+/* Dropzone */
 .dropzone {
   border: 2.5px dashed #cbd5e1;
   border-radius: 18px;
@@ -104,13 +94,6 @@
   color: #64748b;
 }
 
-.upload-icon {
-  width: 56px;
-  height: 56px;
-  fill: #94a3b8;
-  margin-bottom: 16px;
-}
-
 .dropzone-label p {
   margin: 0;
   font-size: 16px;
@@ -123,40 +106,57 @@
   font-size: 16px;
 }
 
-/* URL Input */
-/* Make both upload methods look identical in height & centering */
+/* Content wrapper */
 .content > div {
-  min-height: 180px;              /* same height for both tabs */
+  min-height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* URL tab – full-width centered input */
-.url-input {
+/* Shared style for URL input and dropdowns */
+.input-style {
   width: 100%;
-  max-width: 420px;               /* looks balanced */
+  max-width: 420px;
   padding: 18px 20px;
   border: 2.5px dashed #cbd5e1;
   border-radius: 18px;
   font-size: 16px;
+  background: #f8fafc;
   transition: all 0.3s ease;
   outline: none;
-  background: #f8fafc;
-  text-align: center;             /* extra safety */
+  cursor: pointer;
 }
 
-.url-input:focus {
+.input-style:focus {
   border-color: #4f46e5;
   background: #eef2ff;
   box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
 }
 
-.url-input::placeholder {
-  color: #94a3b8;
-  font-weight: 500;
+/* Dropdown custom arrow */
+.select-style {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%236b7280' viewBox='0 0 20 20'%3E%3Cpath d='M5.23 7.21a.75.75 0 011.06.02L10 10.88l3.71-3.65a.75.75 0 111.04 1.08l-4.24 4.17a.75.75 0 01-1.04 0L5.21 8.31a.75.75 0 01.02-1.1z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
 }
-/* Submit Button - vibrant & premium */
+
+/* Dropdown container spacing */
+.dropdown-container {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.dropdown-label {
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+/* Submit button */
 .submit-btn {
   width: 100%;
   padding: 18px;
@@ -196,11 +196,9 @@
   animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-/* Result Card - clean & bold */
+/* Result Card */
 .result-card {
   margin-top: 32px;
   border-radius: 18px;
