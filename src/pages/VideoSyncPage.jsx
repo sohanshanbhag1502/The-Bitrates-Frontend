@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { FaFileUpload } from "react-icons/fa";
+import { FaFileDownload, FaFileUpload } from "react-icons/fa";
 import "./VideoSyncPage.css";
 import io from "socket.io-client";
 
@@ -36,7 +36,7 @@ export default function VideoSyncPage() {
 
             setCurrentStatus("Uploading video");
 
-            uploadResponse = await fetch(`${API_URL}/api/upload-file`, {
+            uploadResponse = await fetch(`${API_URL}/upload-file`, {
                 method: "POST",
                 body: formData,
             });
@@ -48,18 +48,22 @@ export default function VideoSyncPage() {
             
             socket.on("info", (data) => {
                 if (data.message==='complete-sync'){
-                    console.log(data)
                     setResult({
                         synced: data.offset === 0.0,
                         offset: data.offset,
                         confidence: data.confidence,
-                        status: 'processed'
+                        video_path: data.video_path,
+                        id: data.id,
+                        status: 'processed-sync'
                     });
-                    setLoading(false);
                     setCurrentStatus("Processing complete.");
                 }
                 else if (data.message==='complete-wav2lip'){
-                    setLoading(false);
+                    setResult({
+                        video_path: data.video_path,
+                        id: data.id,
+                        status: 'processed-wav2lip'
+                    });
                     setCurrentStatus("Wav2Lip processing complete.");
                 }
                 else{
@@ -67,11 +71,52 @@ export default function VideoSyncPage() {
                 }
             });
         } catch (err) {
-            setLoading(false);
             console.error(err);
             alert("Error connecting to server.");
         }
-  };
+        finally {
+            setLoading(false);
+        }
+    };
+
+    const downloadFile =async (e) => {
+        e.preventDefault();
+        
+        console.log(result);
+
+        if (!result.video_path.trim()) {
+            setStatus({ type: 'error', message: 'Please enter a filename.' });
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/generate-download-url`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    filename: result.video_path,
+                    id: result.id
+                 }),
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.detail || data.error || 'Failed to fetch download link');
+            }
+
+            const link = document.createElement('a');
+            link.href = data.download_url;
+            link.setAttribute('download', 'output_video.mp4'); 
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error("Download failed:", error);
+        }
+    }
 
     const handleDrag = (e) => {
         e.preventDefault();
@@ -145,7 +190,7 @@ export default function VideoSyncPage() {
                     )}
                 </button>
 
-                {result.status==='processed' && (
+                {result.status==='processed-sync' && (
                     <div className={`result-card ${result.synced ? "synced" : "not-synced"}`}>
                         <div className="result-header">
                             <h3>{result.synced ? "Perfect Sync" : "Out of Sync"}</h3>
@@ -156,14 +201,21 @@ export default function VideoSyncPage() {
 
                             {!result.synced && (
                                 <p className="offset">
-                                    <strong>Offset:</strong> {result.offset}&plusmn;0.2 seconds{" "}
-                                    <strong>Confidence:</strong> {result.confidence}% {" "}
-                                    {result.offset > 0 ? "(audio ahead)" : "(video ahead)"}
+                                    <strong>Offset:</strong> {Math.round(result.offset * 100) / 100}&plusmn;0.2 seconds{" "} {result.offset > 0 ? "(audio ahead)" : "(video ahead)"} <br />
+                                    <strong>Confidence:</strong> {Math.round(result.confidence * 100)}% {" "}
                                 </p>
                             )}
-                        </div>
+                        </div>   
                     </div>
                 )}
+
+                {result.status.startsWith('processed') && 
+                    <button className="submit-btn" onClick={downloadFile}>
+                        <FaFileDownload size={20} style={{ marginRight: "8px" }} />
+                        Download Synced Video
+                    </button> 
+                }
+                
             </div>
         </div>
     );
