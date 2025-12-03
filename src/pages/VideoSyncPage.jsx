@@ -4,8 +4,6 @@ import "./VideoSyncPage.css";
 import io from "socket.io-client";
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
-console.log("API URL:", API_URL);
-
 const SOCKET_URL = import.meta.env.VITE_APP_SOCKET_URL;
 const socket = io(SOCKET_URL);
 
@@ -42,7 +40,6 @@ export default function VideoSyncPage() {
             });
 
             const resp = await uploadResponse.json();
-            console.log("Upload response:", resp);
 
             socket.emit("subscribe", resp.id);
             
@@ -56,6 +53,7 @@ export default function VideoSyncPage() {
                         id: data.id,
                         status: 'processed-sync'
                     });
+                    setLoading(false);
                     setCurrentStatus("Processing complete.");
                 }
                 else if (data.message==='complete-wav2lip'){
@@ -64,6 +62,7 @@ export default function VideoSyncPage() {
                         id: data.id,
                         status: 'processed-wav2lip'
                     });
+                    setLoading(false);
                     setCurrentStatus("Wav2Lip processing complete.");
                 }
                 else{
@@ -71,18 +70,14 @@ export default function VideoSyncPage() {
                 }
             });
         } catch (err) {
+            setLoading(false);
             console.error(err);
             alert("Error connecting to server.");
-        }
-        finally {
-            setLoading(false);
         }
     };
 
     const downloadFile =async (e) => {
         e.preventDefault();
-        
-        console.log(result);
 
         if (!result.video_path.trim()) {
             setStatus({ type: 'error', message: 'Please enter a filename.' });
@@ -136,8 +131,16 @@ export default function VideoSyncPage() {
         <div className="page-container">
             <div className="card">
                 <h1 className="title">
-                    <span className="gradient-text">AV Sync Checker</span>
+                    <span className="gradient-text">AV Sync Detector</span>
                 </h1>
+
+                <div class="note-body">
+                    <span class="note-icon">⚠️</span>
+                    <p>
+                        <strong>Note:</strong> Upload videos of length 60s or less
+                        otherwise <span class="highlight">only first 60s of video will be processed</span>.
+                    </p>
+                </div>
 
                 <div className="content">
                     <div
@@ -174,21 +177,29 @@ export default function VideoSyncPage() {
                             />
                             Dubbed Video
                     </label>
-
-                    <label style={{ display: "flex", justifyContent: "center", alignItems: "center", margin: "10px" }}>
-                        Current Processing Status: {currentStatus}...
-                    </label>
                 </div>
 
                 <button className="submit-btn" onClick={handleSubmit} disabled={loading}>
                     {loading ? (
                         <>
-                            <span className="spinner"></span> Processing...
+                            <span className="spinner"></span> {currentStatus}...
                         </>
                     ) : (
                         "Check Sync"
                     )}
                 </button>
+
+                {result.status.startsWith('processed') && (<h2 style={{
+                    fontSize: '1.5rem',
+                    fontWeight: '800',
+                    background: 'linear-gradient(to right, #6366f1, #a855f7)', // Indigo to Purple
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    marginBottom: '24px',
+                    textAlign: 'center'
+                }}>
+                    ✨ Processing Completed ✨ 
+                </h2>) }
 
                 {result.status==='processed-sync' && (
                     <div className={`result-card ${result.synced ? "synced" : "not-synced"}`}>
