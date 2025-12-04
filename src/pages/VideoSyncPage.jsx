@@ -80,7 +80,7 @@ export default function VideoSyncPage() {
         e.preventDefault();
 
         if (!result.video_path.trim()) {
-            setStatus({ type: 'error', message: 'Please enter a filename.' });
+            alert("No video available for download.");
             return;
         }
 
@@ -134,11 +134,11 @@ export default function VideoSyncPage() {
                     <span className="gradient-text">AV Sync Detector</span>
                 </h1>
 
-                <div class="note-body">
-                    <span class="note-icon">⚠️</span>
+                <div className="note-body">
+                    <span className="note-icon">⚠️</span>
                     <p>
                         <strong>Note:</strong> Upload videos of length 60s or less
-                        otherwise <span class="highlight">only first 60s of video will be processed</span>.
+                        otherwise <span className="highlight">only first 60s of video will be processed</span>.
                     </p>
                 </div>
 
