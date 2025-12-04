@@ -11,38 +11,38 @@ This is the frontend microservice of AV Sync Detector.
 ### Run in Development Mode
 
 1. Create a .env file with following vars:
-```Dotenv
-VITE_APP_API_URL
-VITE_APP_SOCKET_URL
-```
+    ```Dotenv
+    VITE_APP_API_URL
+    VITE_APP_SOCKET_URL
+    ```
 
 2. Install all the dependencies using the following command:
-```bash
-npm install
-```
+    ```bash
+    npm install
+    ```
 
 3. Run the following command to start the server in dev mode
-```bash
-npm run dev
-```
+    ```bash
+    npm run dev
+    ```
 
 ### Run in Production Mode
 
 1. Create a .env file with following vars:
-```Dotenv
-VITE_APP_API_URL
-VITE_APP_SOCKET_URL
-```
+    ```Dotenv
+    VITE_APP_API_URL
+    VITE_APP_SOCKET_URL
+    ```
 
 2. Install all the dependencies using the following command:
-```bash
-npm ci
-```
+    ```bash
+    npm ci
+    ```
 
 3. Run the following command to build for production
-```bash
-npm run build
-```
+    ```bash
+    npm run build
+    ```
 
 4. The build files will be generated in the `dist` folder. You can serve these files using any static file server such as nginx.
 
@@ -50,9 +50,9 @@ npm run build
 
 Alternatively if you have Docker installed, you can directly deploy the app in production using the following command:
 
-```bash
-docker run -p 80:80 --env-file .env shanbhagsohan/av-sync-detector-bitrates:vite-service
-```
+    ```bash
+    docker run -p 80:80 --env-file .env shanbhagsohan/av-sync-detector-bitrates:vite-service
+    ```
 **Note**: Ensure that `.env` file is in present with the above listed environment variables when you run the above command.
 
 To Deploy all the services using Docker Compose, refer to the backend [README](https://github.com/sohanshanbhag1502/The-Bitrates-Backend/tree/main/README.md) file.
